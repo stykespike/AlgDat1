@@ -9,12 +9,13 @@
 #define STUDENT_HPP_
 class Student{
 	static int m_MatrikelnummerID;
-	const int m_Matrikelnummer;
+	int m_Matrikelnummer;
 	char m_NameVorname[10];
 	char m_Geburtsdatum[9];
 
 public:
 	Student();
+	Student(const Student& std );
 
 	int getMatrikelnummer(){return m_Matrikelnummer;}
 	const char* getNameVorname() const {return m_NameVorname;}

@@ -15,6 +15,11 @@ Student::Student():m_Matrikelnummer(m_MatrikelnummerID)
 	strncpy(m_NameVorname, ".\0",2);
 	strncpy(m_Geburtsdatum, ".\0",2);
 }
+Student::Student(const Student& std): m_Matrikelnummer(std.m_Matrikelnummer)
+{
+	strncpy(m_NameVorname, std.m_NameVorname,sizeof(m_NameVorname));
+	strncpy(m_Geburtsdatum,std.m_Geburtsdatum ,sizeof(m_Geburtsdatum));
+}
 void Student::setNameVorname(const char *name)
 {
 
