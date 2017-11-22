@@ -12,20 +12,29 @@ int Student::m_MatrikelnummerID = 0;
 Student::Student():m_Matrikelnummer(m_MatrikelnummerID)
 {
 	m_MatrikelnummerID++;
-	strncpy(m_NameVorname, ".\0",2);
+	strncpy(m_Vorname, ".\0",2);
+	strncpy(m_Nachname, ".\0",2);
 	strncpy(m_Geburtsdatum, ".\0",2);
+}
+Student::Student(int matrikelnummer):m_Matrikelnummer(matrikelnummer){
+	strncpy(m_Vorname, ".\0",2);
+	strncpy(m_Nachname, ".\n",2);
+	strncpy(m_Geburtsdatum,".\0",2);
 }
 Student::Student(const Student& std): m_Matrikelnummer(std.m_Matrikelnummer)
 {
-	strncpy(m_NameVorname, std.m_NameVorname,sizeof(m_NameVorname));
+	strncpy(m_Vorname, std.m_Vorname,sizeof(m_Vorname));
+	strncpy(m_Nachname, std.m_Nachname,sizeof(m_Nachname));
 	strncpy(m_Geburtsdatum,std.m_Geburtsdatum ,sizeof(m_Geburtsdatum));
 }
-void Student::setNameVorname(const char *name)
+void Student::setVorname(const char *name)
 {
-
-	strncpy (m_NameVorname, name, 9);
-	m_NameVorname[9] = '\0';
-	//std::cout << m_NameVorname;
+	strncpy (m_Vorname, name, 9);
+	m_Vorname[9] = '\0';
+}
+void Student::setNachname(const char *name){
+	strncpy(m_Nachname , name, 9);
+	m_Nachname[9] = '\0';
 }
 void Student::setGeburtsdatum(const char *datum)
 {
@@ -34,10 +43,12 @@ void Student::setGeburtsdatum(const char *datum)
 }
 void Student::read(std::istream& istr)
 {
-	std::string name;
+	std::string vorname;
+	std::string nachname;
 	std::string datum;
-	istr >> name >> datum;
-	this->setNameVorname(name.c_str());
+	istr >> vorname >> nachname >> datum;
+	this->setVorname(vorname.c_str());
+	this->setNachname(nachname.c_str());
 	this->setGeburtsdatum(datum.c_str());
 
 }
@@ -46,7 +57,8 @@ void Student::read(std::istream& istr)
 void Student::write(std::ostream& out) const
 {
 	out << "Matrikelnummer: " << m_Matrikelnummer << '\n' << "Geburtsdatum: "
-		<< m_Geburtsdatum << '\n' << "NameVorname: " << m_NameVorname << '\n';
+		<< m_Geburtsdatum << '\n' << "Vorname: " << m_Vorname << '\n'
+		<< "Nachname: " << m_Nachname << '\n';
 }
 
 bool operator== (const Student &s1, const Student &s2)
