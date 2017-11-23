@@ -84,22 +84,22 @@ void CursorList<T>::push_front(const T &element){
 	else{
 		m_Array[m_freeHead].listElement = element;
 		int knotIndex = m_freeHead;
-		if (m_dataHead < 0){
-			m_dataHead = 0;
-			m_dataTail = 0;
+		if (m_dataHead < 0){//erstes element in der liste
+			m_dataHead = m_freeHead;//setzen des neuen data list anfangs
+			m_dataTail = m_freeHead;//setzen des neuen data list endpunkt
 			m_freeHead = m_Array[knotIndex].next;
 			m_Array[m_dataHead].previous = -1;
 			m_Array[m_dataHead].next = -1;
-			m_Array[m_freeHead].previous = -1;
+			m_Array[m_freeHead].previous = -1;//neuen free head previous -1 setzen
 
 		}
 		else{
-			m_Array[m_dataTail].next = knotIndex;
-			m_freeHead = m_Array[knotIndex].next;
-			m_Array[knotIndex].next = -1;
-			m_Array[knotIndex].previous = m_dataTail;
-			m_dataTail = knotIndex;
-			m_Array[m_freeHead].previous = -1;
+			m_Array[m_dataTail].next = knotIndex;//erweiterung der data list
+			m_freeHead = m_Array[knotIndex].next;//setzen des neuen free heads
+			m_Array[knotIndex].next = -1;//beenden der data list
+			m_Array[knotIndex].previous = m_dataTail;//vollständige data list verlinkung
+			m_dataTail = knotIndex;//neues ende der liste merken
+			m_Array[m_freeHead].previous = -1;//neuen anfang von free list vervollständigen
 		}
 	}
 }
@@ -109,18 +109,17 @@ void CursorList<T>::pop_front(){
 		throw "List is empty";
 	}
 	else{
-		if(m_dataTail==m_dataHead){
+		if(m_dataTail==m_dataHead){//einzige element in der liste
 			int index = m_dataTail;
 			m_dataTail = m_Array[index].previous;
-			m_Array[index].next = m_freeHead;
-			m_Array[m_freeHead].previous = index;
+			m_Array[index].next = m_freeHead;//verlinkung zum frei speicher
+			m_Array[m_freeHead].previous = index;//verlinkung zum freispeicher
 			m_freeHead = index;
-			m_Array[m_dataTail].next = -1;
 			m_dataHead = -1;
 		}
 		else{
 			int index = m_dataTail;
-			m_dataTail = m_Array[index].previous;
+			m_dataTail = m_Array[index].previous;//neuen data tail bestimmen
 			m_Array[index].next = m_freeHead;
 			m_Array[m_freeHead].previous = index;
 			m_freeHead = index;

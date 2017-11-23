@@ -19,7 +19,34 @@ void listAreaErase(CursorList<Student> &list);
 void listfind(CursorList<Student> &list);
 int main(int argc, char *argv[]){
 CursorList<Student> CL1;
-
+Student s1;
+/*
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.push_front(s1);*/
+CL1.push_front(s1);
+CL1.push_front(s1);
+CL1.pop_front();
+//CL1.pop_front();
+//auto itrS = CL1.begin();
+//++itrS;
+//++itrS;//3 element
+//++itrS;
+//++itrS;
+//++itrS;
+//++itrS;//7
+//++itrS;
+//++itrS;
+//++itrS;
+//++itrS;
+//CL1.erase(CL1.begin(),itrS);
+//CL1.push_front(s1);
+/*
 int command;
 while(command != 0){
 	std::cout << "-----------------<Modify Your Student List>----------------" << '\n'
@@ -69,7 +96,7 @@ while(command != 0){
 	catch (const char* exception){
 		std::cerr << "Error:" << exception << '\n';
 	}
-}
+}*/
 return 0;
 }
 
@@ -125,6 +152,9 @@ void listerase(CursorList<Student> &list){
 		for(int i = 1; i < index ; ++i){
 			++itr;
 		}
+	if(itr.getlistIndex()<list.size()){
+		throw "You shouldnt delete something that doesnt exist";
+	}
 	list.erase(itr);
 	std::cout << "Element has been removed" << '\n';
 }
