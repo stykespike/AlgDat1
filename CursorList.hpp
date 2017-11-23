@@ -172,28 +172,28 @@ typename CursorList<T>::iterator CursorList<T>::erase(iterator itr){
 		int itrCurr = itr.m_index;
 		auto dummy = ++itr;
 		dummy.m_listIndex -=1;
-		m_Array[itrCurr].previous = -1;				//setzt zukünftigen freeHead previous -1
-		m_Array[itrCurr].next =m_freeHead;			//verknuepft zukünftigen freeHead mit vorherigem freeHead
-		m_Array[m_freeHead].previous = itrCurr;		//vollendung der verknüpfung von neuem und alten freeHead
-		if(itrCurr == m_dataHead){					//Prüfen ob erstes element
-			if(m_dataHead != m_dataTail){			//test ob es das nicht das einzige element ist
-				m_Array[itrNext].previous = -1;		//new dataHead previous korrigiert
-				m_dataHead = itrNext;				//setzt neuen listenanfang an in der liste volgende element
+		itr.m_CursorList.m_Array[itrCurr].previous = -1;				//setzt zukünftigen freeHead previous -1
+		itr.m_CursorList.m_Array[itrCurr].next =m_freeHead;			//verknuepft zukünftigen freeHead mit vorherigem freeHead
+		itr.m_CursorList.m_Array[m_freeHead].previous = itrCurr;		//vollendung der verknüpfung von neuem und alten freeHead
+		if(itrCurr == itr.m_CursorList.m_dataHead){					//Prüfen ob erstes element
+			if(itr.m_CursorList.m_dataHead != itr.m_CursorList.m_dataTail){			//test ob es das nicht das einzige element ist
+				itr.m_CursorList.m_Array[itrNext].previous = -1;		//new dataHead previous korrigiert
+				itr.m_CursorList.m_dataHead = itrNext;				//setzt neuen listenanfang an in der liste volgende element
 			}
 			else{									//falls es das einzige element ist müssen dataHead und dataTail angepasst werden
-				m_dataHead = -1;
-				m_dataTail = -1;
+				itr.m_CursorList.m_dataHead = -1;
+				itr.m_CursorList.m_dataTail = -1;
 			}
 		}
-		else if(itrCurr == m_dataTail){				//fals es das letzte element ist
-			m_Array[itrPrev].next = -1; 			//umbiegen des vorgaengigen next indeses
-			m_dataTail = itrPrev;					//setzen des neuen data tails
+		else if(itrCurr == itr.m_CursorList.m_dataTail){				//fals es das letzte element ist
+			itr.m_CursorList.m_Array[itrPrev].next = -1; 			//umbiegen des vorgaengigen next indeses
+			itr.m_CursorList.m_dataTail = itrPrev;					//setzen des neuen data tails
 		}
 		else{										//löschen aus der mitte
-			m_Array[itrPrev].next = itrNext;
-			m_Array[itrNext].previous = itrPrev;
+			itr.m_CursorList.m_Array[itrPrev].next = itrNext;
+			itr.m_CursorList.m_Array[itrNext].previous = itrPrev;
 		}
-		m_freeHead = itrCurr;						//stezen de neuen free heads
+		itr.m_CursorList.m_freeHead = itrCurr;						//stezen de neuen free heads
 		return dummy;
 	}
 	else{											//Liste ist leer
@@ -208,35 +208,35 @@ typename CursorList<T>::iterator CursorList<T>::insert(iterator itr ,const T &va
 	int itrCurr = itr.m_index;
 	int itrPrev = itr.m_CursorList.m_Array[itrCurr].previous;
 	int insertPoint = m_freeHead;
-	if(m_freeHead <0){									//sonderfall wenn die liste voll ist
+	if(itr.m_CursorList.m_freeHead <0){									//sonderfall wenn die liste voll ist
 		throw "List is full";
 	}
 	if(itr.m_CursorList.empty()){						//sonderfall wenn die liste kein element hat
 		throw "List is Empty use a push_front instead";
 	}
 	else{
-		m_freeHead = m_Array[insertPoint].next;			//weiterrücken des free heads um eins
-		m_Array[m_freeHead].previous = -1;				//vollendung des weiterrückens
+		itr.m_CursorList.m_freeHead = m_Array[insertPoint].next;			//weiterrücken des free heads um eins
+		itr.m_CursorList.m_Array[m_freeHead].previous = -1;				//vollendung des weiterrückens
 		if(itr.m_index == m_dataHead){					//vors erste element
-			m_Array[insertPoint].listElement = value;	//einfügen des elements
-			m_Array[insertPoint].previous = -1;			//setzen des neuen ersten elements
-			m_Array[insertPoint].next = itrCurr;		//verknüpfung an das nächste element
-			m_Array[itrCurr].previous = insertPoint;	//verknüpfung an das eingefügte element
-			m_dataHead = insertPoint;					//setzen des neuen data heads
+			itr.m_CursorList.m_Array[insertPoint].listElement = value;	//einfügen des elements
+			itr.m_CursorList.m_Array[insertPoint].previous = -1;			//setzen des neuen ersten elements
+			itr.m_CursorList.m_Array[insertPoint].next = itrCurr;		//verknüpfung an das nächste element
+			itr.m_CursorList.m_Array[itrCurr].previous = insertPoint;	//verknüpfung an das eingefügte element
+			itr.m_CursorList.m_dataHead = insertPoint;					//setzen des neuen data heads
 		}
 		else if(itr.m_index==-1){						//einfügen am ende
-			m_Array[insertPoint].listElement = value;	//einfügen des elements
-			m_Array[insertPoint].previous = m_dataTail;	//verbinden an die data list
-			m_Array[insertPoint].next = -1;				//setzen des neuen data list ende
-			m_Array[m_dataTail].next = insertPoint;		//verknüpft auf das neue letzte element
-			m_dataTail = insertPoint;					//setzen des neuen data tails
+			itr.m_CursorList.m_Array[insertPoint].listElement = value;	//einfügen des elements
+			itr.m_CursorList.m_Array[insertPoint].previous = m_dataTail;	//verbinden an die data list
+			itr.m_CursorList.m_Array[insertPoint].next = -1;				//setzen des neuen data list ende
+			itr.m_CursorList.m_Array[m_dataTail].next = insertPoint;		//verknüpft auf das neue letzte element
+			itr.m_CursorList.m_dataTail = insertPoint;					//setzen des neuen data tails
 		}
 		else{											//zwischen drinnen
-			m_Array[insertPoint].listElement = value;	//einfügen des elements
-			m_Array[insertPoint].previous = itrPrev;	//verknüpfen mit voherigem listen element
-			m_Array[insertPoint].next =itrCurr;			//verknüpfen mit nächstem listen element
-			m_Array[itrCurr].previous = insertPoint;	//verbindet das volgende element mit dem eingefügten
-			m_Array[itrPrev].next = insertPoint;		//verbinde das vorherige element mit dem eingefügten
+			itr.m_CursorList.m_Array[insertPoint].listElement = value;	//einfügen des elements
+			itr.m_CursorList.m_Array[insertPoint].previous = itrPrev;	//verknüpfen mit voherigem listen element
+			itr.m_CursorList.m_Array[insertPoint].next =itrCurr;			//verknüpfen mit nächstem listen element
+			itr.m_CursorList.m_Array[itrCurr].previous = insertPoint;	//verbindet das volgende element mit dem eingefügten
+			itr.m_CursorList.m_Array[itrPrev].next = insertPoint;		//verbinde das vorherige element mit dem eingefügten
 		}
 		itr.m_listIndex+=1;
 		return itr;
