@@ -130,7 +130,7 @@ void listerase(CursorList<Student> &list){
 		for(int i = 1; i < index ; ++i){
 			++itr;
 		}
-	if(itr.getlistIndex()>list.size()){
+	if(index>list.size() || list.empty()){
 		throw "You shouldnt delete something that doesnt exist";
 	}
 	list.erase(itr);
