@@ -2,7 +2,7 @@
  * Student.cpp
  *
  *  Created on: 03.11.2017
- *      Author: schmi
+ *      Author: Schmidt Felix, Stefan Bommas
  */
 #include <iostream>
 #include<cstring>

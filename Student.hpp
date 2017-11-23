@@ -2,7 +2,7 @@
  * Student.hpp
  *
  *  Created on: 03.11.2017
- *      Author: schmi
+ *      Author: Schmidt Felix, Stefan Bommas
  */
 
 #ifndef STUDENT_HPP_
@@ -23,12 +23,11 @@ public:
 	const char* getVorname() const {return m_Vorname;}
 	const char* getGeburtsdatum() const {return m_Geburtsdatum;}
 	const char* getNachname() const {return m_Nachname;}
-//private:
-	//void setMartrikelnummer();
+private:
 	void setVorname(const char *name);
 	void setGeburtsdatum(const char *datum);
 	void setNachname(const char *name);
-//public:
+public:
 	friend bool operator== (const Student &s1, const Student &s2);
 	friend bool operator>= (const Student &s1, const Student &s2);
 	friend bool operator<= (const Student &s1, const Student &s2);
