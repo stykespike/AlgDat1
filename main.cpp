@@ -96,8 +96,8 @@ void listpush(CursorList<Student> &list){
 }
 
 void listpop(CursorList<Student> &list){
-	std::cout << "Top element has been deleted" << '\n';
 	list.pop_front();
+	std::cout << "Top element has been deleted" << '\n';
 }
 
 void listprint(CursorList<Student> &list){
