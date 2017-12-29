@@ -26,6 +26,7 @@ public:
 		Leaf(T value);
 		virtual void print();
 		void setValue(T value);
+		T& getValue();
 		virtual ~Leaf();
 	};
 
@@ -40,8 +41,21 @@ public:
 		bool isEmpty() const;
 		void clear();
 		int size() const;
-		void erase(const char& delChar);
+		void erase(const char delChar);
 		virtual ~Inner();
+	};
+	class Iterator{
+		friend class Trie;
+		std::stack<std::weak_ptr<Inner>> m_refStack;
+		std::stack<typename std::map<E,std::shared_ptr<Trie<T, E>::IKnot> >::iterator> m_itrStack;
+		Iterator();
+	public:
+		T& operator *();
+		Trie<T, E>::Iterator& operator = (const Trie<T, E>::Iterator& rhs);
+		bool operator == (const Trie<T, E>::Iterator& rhs) const;
+		bool operator != (const Trie<T, E>::Iterator& rhs) const;
+		Trie<T, E>::Iterator& operator ++();
+		Trie<T, E>::Iterator operator ++(int);
 	};
 	private:
 	std::shared_ptr<IKnot> m_Root = nullptr;
@@ -51,7 +65,7 @@ public:
  typedef std::basic_string<E> key_type; 							// string=basic_string<char>
  typedef std::pair<const key_type, T> value_type;
  typedef T mapped_type;
- //typedef ... iterator; 										// ...: keine C/C++ Ellipse, sondern von Ihnen
+ typedef Trie<T, E>::Iterator iterator; 										// ...: keine C/C++ Ellipse, sondern von Ihnen
  	 	 	 	 	 	 	 	 	 	 	 	 	 	 	// zu entwickeln…
  //typedef std::reverse_iterator<iterator> reverse_iterator;
  bool empty() const;
@@ -74,10 +88,11 @@ template<class T,class E>
 Trie<T,E>::Trie() : m_Root(std::make_shared<Inner>()) {
 }
 
-/** */
+/** Prints the howl trie*/
 template<class T, class E>
 void Trie<T,E>::print() const {
 	m_Root->print();
+	std::cout << '\n';
 }
 
 /**Looks if the Trie (map of the root) is empty
@@ -121,31 +136,33 @@ template<class T,class E>
 void Trie<T,E>::erase(const key_type& value) {
 	std::string deleteKey = value;
 	int index = 0;
-	int rIndex = deleteKey.length()-1;
-	std::stack<std::weak_ptr<IKnot>> rStack;
+	std::stack<std::weak_ptr<Inner>> rStack;
 	std::shared_ptr<Inner> dPtr = std::static_pointer_cast<Inner>(m_Root);
 	if (deleteKey.length() > 0) {
-		std::weak_ptr<IKnot> wPtr = m_Root;
+		std::weak_ptr<Inner> wPtr = dPtr;
 		rStack.push(wPtr);
 	} else {
 		//exception word is not in the trie
 	}
 	while (dPtr->count(deleteKey[index])) {
-		std::weak_ptr<IKnot> wPtr = dPtr->m_Sons.at(deleteKey[index]);
+		std::shared_ptr<Inner> sPtr = std::static_pointer_cast<Inner>(dPtr->m_Sons.at(deleteKey[index]));
+		std::weak_ptr<Inner> wPtr = sPtr;
 		rStack.push(wPtr);
 		++index;
-		dPtr = dPtr->m_Sons.at(deleteKey[index]);
+		dPtr = sPtr;
 	}
 	if (index < deleteKey.length()) {
 		// exception word is not in trie
 	}
-	std::shared_ptr<Inner> dWPtr = std::static_pointer_cast<Inner>(rStack.top().lock());
-	while (dWPtr->size() > 1 && rIndex >0) {
-		dWPtr->erase(deleteKey[rIndex]);
-		--rIndex;
+	std::string delString = value + '~';
+	std::cout << delString << '\n';
+	int rIndex = delString.length()-1;
+	//std::shared_ptr<Inner> dWPtr = std::static_pointer_cast<Inner>(rStack.top().lock());
+	while (rStack.top().lock()->size() < 2 && rIndex > 0) {
 		rStack.pop();
-		dWPtr = rStack.top().lock();
+		--rIndex;
 	}
+	rStack.top().lock()->erase(delString[rIndex]);
 }
 //-------------------------------------------------------------------------------------------
 //Inner class Stuff
@@ -186,7 +203,7 @@ void Trie<T,E>::Inner::clear() {
 
 /** erases an entry of the map with teh respective key */
 template<class T, class E>
-void Trie<T,E>::Inner::erase(const char& delChar) {
+void Trie<T,E>::Inner::erase(const char delChar) {
 	m_Sons.erase(delChar);
 }
 /** checks size of the map */
@@ -228,6 +245,11 @@ template<class T, class E>
 void Trie<T,E>::Leaf::setValue(T value){
 	m_Value = value;
 }
+template<class T, class E>
+T& Trie<T,E>::Leaf::getValue() {
+	return m_Value;
+}
+
 
 template<class T, class E>
 Trie<T,E>::Leaf::~Leaf(){
@@ -236,5 +258,39 @@ Trie<T,E>::Leaf::~Leaf(){
 //-------------------------------------------------------------------------------------------
 //Iterator class Stuff
 //-------------------------------------------------------------------------------------------
+/** Dereferencing operator will return the value of the leaf*/
+template<class T, class E>
+T& Trie<T,E>::Iterator::operator *(){
+	return std::static_pointer_cast<Leaf>(m_refStack.top().at('~')).getValue();
+}
 
+/** copy assign operator for post increment operator*/
+template<class T, class E>
+typename Trie<T, E>::Iterator& Trie<T,E>::Iterator::operator = (const Trie<T, E>::Iterator& rhs) {
+	//todo
+}
+
+/** logical equals operator*/
+template<class T, class E>
+bool Trie<T,E>::Iterator::operator == (const Trie<T, E>::Iterator& rhs) const {
+	return m_refStack == rhs.m_refStack && m_itrStack == rhs.m_itrStack;
+}
+
+/** logical not equals operator*/
+template<class T, class E>
+bool Trie<T,E>::Iterator::operator != (const Trie<T, E>::Iterator& rhs) const {
+	return !(this == rhs);
+}
+
+/** preincrement operator*/
+template<class T, class E>
+typename Trie<T, E>::Iterator& Trie<T,E>::Iterator::operator ++() {
+	//todo
+}
+
+/** postincrement operator*/
+template<class T, class E>
+typename Trie<T, E>::Iterator Trie<T,E>::Iterator::operator ++(int) {
+	//todo
+}
 #endif /* TRIE_HPP_ */
