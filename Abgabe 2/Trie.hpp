@@ -13,6 +13,7 @@
 template<class T, class E=char>
 class Trie{
 	friend class Inner;
+	friend class Iterator;
 public:
 	class IKnot{
 	public:
@@ -36,6 +37,7 @@ public:
 	public:
 		Inner();
 		virtual void print();
+		bool isEnd(typename std::map<E,std::shared_ptr<Trie<T, E>::IKnot>>::iterator& itr) const;
 		void insert(std::pair<E,std::shared_ptr<IKnot>> value);
 		int count(E key) const;
 		bool isEmpty() const;
@@ -48,8 +50,11 @@ public:
 		friend class Trie;
 		std::stack<std::weak_ptr<Inner>> m_refStack;
 		std::stack<typename std::map<E,std::shared_ptr<Trie<T, E>::IKnot> >::iterator> m_itrStack;
+		std::string m_key;
 		Iterator();
+		void push(typename std::weak_ptr<Inner>& wptr,const char& key);
 	public:
+		std::string getKey();
 		T& operator *();
 		Trie<T, E>::Iterator& operator = (const Trie<T, E>::Iterator& rhs);
 		bool operator == (const Trie<T, E>::Iterator& rhs) const;
@@ -76,8 +81,8 @@ public:
  //iterator lower_bound(const key_type& testElement); 		// first element >= testElement
  //iterator upper_bound(const key_type& testElement); 		// first element > testElement
  //iterator find(const key_type& testElement); 				// first element == testElement
- //iterator begin(); 											// returns end() if not found
- //iterator end();
+ iterator begin(); 											// returns end() if not found
+ iterator end();
  //reverse_iterator rbegin(); //wenn Sie Lust und Zeit haben…
  //reverse_iterator rend(); //wenn Sie Lust und Zeit haben…
 };
@@ -143,6 +148,7 @@ void Trie<T,E>::erase(const key_type& value) {
 		rStack.push(wPtr);
 	} else {
 		//exception word is not in the trie
+		//todo
 	}
 	while (dPtr->count(deleteKey[index])) {
 		std::shared_ptr<Inner> sPtr = std::static_pointer_cast<Inner>(dPtr->m_Sons.at(deleteKey[index]));
@@ -153,6 +159,7 @@ void Trie<T,E>::erase(const key_type& value) {
 	}
 	if (index < deleteKey.length()) {
 		// exception word is not in trie
+		//todo
 	}
 	std::string delString = value + '~';
 	std::cout << delString << '\n';
@@ -164,6 +171,32 @@ void Trie<T,E>::erase(const key_type& value) {
 	}
 	rStack.top().lock()->erase(delString[rIndex]);
 }
+
+/** returns an iterator to the left lowest element*/
+template<class T, class E>
+typename Trie<T,E>::Iterator Trie<T,E>::begin() {
+	Trie<T,E>::Iterator itr;
+	if (this->empty()) {
+		itr = end();
+	} else {
+		itr = Iterator();
+		std::weak_ptr<Inner> wptr = std::static_pointer_cast<Inner>(m_Root);
+		itr.push(wptr,'#');
+		while (itr.m_itrStack.top()->first != '~') {
+			std::weak_ptr<Inner> wPtr = std::static_pointer_cast<Inner>(itr.m_itrStack.top()->second);
+			itr.push(wPtr, itr.m_itrStack.top()->first);
+		}
+	}
+	++itr.m_itrStack.top();
+	return itr;
+}
+
+/** creates an iterator to one element past the last element in the trie*/
+template<class T, class E>
+typename Trie<T,E>::Iterator Trie<T,E>::end() {
+	return Iterator();
+}
+
 //-------------------------------------------------------------------------------------------
 //Inner class Stuff
 //-------------------------------------------------------------------------------------------
@@ -212,6 +245,12 @@ int Trie<T,E>::Inner::size() const {
 	return m_Sons.size();
 }
 
+/** checks if an iterator is an end iterator*/
+template<class T, class E>
+bool Trie<T,E>::Inner::isEnd(typename std::map<E,std::shared_ptr<Trie<T, E>::IKnot>>::iterator& itr)const {
+	return itr == m_Sons.end();
+}
+
 /**  Inserts new element into the map*/
 template<class T, class E>
 void Trie<T,E>::Inner::insert(std::pair<E,std::shared_ptr<IKnot>> value){
@@ -250,7 +289,6 @@ T& Trie<T,E>::Leaf::getValue() {
 	return m_Value;
 }
 
-
 template<class T, class E>
 Trie<T,E>::Leaf::~Leaf(){
 	std::cout << "Leaf destroyed \n";
@@ -258,10 +296,33 @@ Trie<T,E>::Leaf::~Leaf(){
 //-------------------------------------------------------------------------------------------
 //Iterator class Stuff
 //-------------------------------------------------------------------------------------------
+/** returns the key the iterator is currently pointing*/
+template<class T, class E>
+std::string Trie<T,E>::Iterator::getKey() {
+	return m_key;
+}
+
+/** constructor for iterator*/
+template<class T, class E>
+Trie<T,E>::Iterator::Iterator() {
+
+}
+/** push a new weak_ptr and itr to the stacks*/
+template<class T, class E>
+void Trie<T,E>::Iterator::push(typename std::weak_ptr<Inner>& wptr, const char& key) {
+	m_refStack.push(wptr);
+	m_itrStack.push(m_refStack.top().lock()->m_Sons.begin());
+	m_key += key;
+}
+
 /** Dereferencing operator will return the value of the leaf*/
 template<class T, class E>
 T& Trie<T,E>::Iterator::operator *(){
-	return std::static_pointer_cast<Leaf>(m_refStack.top().at('~')).getValue();
+	if (m_refStack.empty()) {
+		std::cout << "dont do it" << '\n';
+	}else{
+	return std::static_pointer_cast<Leaf>(m_refStack.top().lock()->m_Sons.at('~'))->getValue();
+	}
 }
 
 /** copy assign operator for post increment operator*/
@@ -273,21 +334,34 @@ typename Trie<T, E>::Iterator& Trie<T,E>::Iterator::operator = (const Trie<T, E>
 /** logical equals operator*/
 template<class T, class E>
 bool Trie<T,E>::Iterator::operator == (const Trie<T, E>::Iterator& rhs) const {
-	return m_refStack == rhs.m_refStack && m_itrStack == rhs.m_itrStack;
+	return this->m_key == rhs.m_key;
 }
 
 /** logical not equals operator*/
 template<class T, class E>
 bool Trie<T,E>::Iterator::operator != (const Trie<T, E>::Iterator& rhs) const {
-	return !(this == rhs);
+	return this->m_key != rhs.m_key;
 }
 
 /** preincrement operator*/
 template<class T, class E>
 typename Trie<T, E>::Iterator& Trie<T,E>::Iterator::operator ++() {
-	//todo
+	while (!m_refStack.empty() && m_refStack.top().lock()->isEnd(m_itrStack.top())) {
+		m_refStack.pop();
+		m_itrStack.pop();
+		m_key.pop_back();
+		if (!m_refStack.empty()){
+			++m_itrStack.top();
+		}
+	}
+	while (!m_refStack.empty() && m_itrStack.top()->first != '~') {
+		std::weak_ptr<Inner> wPtr = std::static_pointer_cast<Inner>(m_itrStack.top()->second);
+		push(wPtr,m_itrStack.top()->first);
+	}
+	if (!m_refStack.empty()) {
+		++m_itrStack.top();
+	}
 }
-
 /** postincrement operator*/
 template<class T, class E>
 typename Trie<T, E>::Iterator Trie<T,E>::Iterator::operator ++(int) {
