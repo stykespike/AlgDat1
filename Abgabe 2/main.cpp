@@ -8,6 +8,17 @@
 #include<iostream>
 #include "Trie.hpp"
 
+void trieempty();
+void trieinsert();
+void trieerase();
+void trieclear();
+void trieprint();
+void trielower();
+void trieupper();
+void triefind();
+void triebegin();
+void trieend();
+
 int main(int argc, char* argv[]){
     Trie<int> trie1;
     int i;
@@ -30,6 +41,42 @@ int main(int argc, char* argv[]){
 			<< "*------------------------*"	<< '\n'
 			<< "Enter number here: ";
 	std::cin >> command;
+        try{
+		if(command == 1){
+			trieempty(trie1);
+		}
+		else if(command == 2){
+			trieinsert(trie1);
+		}
+		else if(command == 3){
+			trieerase(trie1);
+		}
+		else if(command == 4){
+			trieclear(trie1);
+		}
+		else if(command == 5){
+			trieprint(trie1);
+		}
+		else if(command == 6){
+			trielower(trie1);
+		}
+		else if(command == 7){
+			trieupper(trie1);
+		}
+		else if(command == 8){
+			triefind(trie1);
+		}
+		else if(command == 9){
+			triebegin(trie1);
+		}
+		else if(command == 10){
+			trieend(trie1);
+		}
+	}
+	catch (const char* exception){
+		std::cerr << "Error: " << exception << '\n';
+	}
+	std::cout << '\n';
     }
     //trie1.insert(std::make_pair("hallo", 99));
     //trie1.insert(std::make_pair("hales", 13));
