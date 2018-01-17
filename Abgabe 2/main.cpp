@@ -126,11 +126,19 @@ void trieprint(Trie<int> &trie){
 }
 
 void trielower(Trie<int> &trie){
-    
+    std::string lower;
+    std::cout << "Enter element to get first position" << '\n';
+    std::cin >> lower;
+    auto itrfind = trie.find(lower);
+    std::cout << *itrfind << '\n';
 }
 
 void trieupper(Trie<int> &trie){
-    
+    std::string upper;
+    std::cout << "Enter element to get last position" << '\n';
+    std::cin >> upper;
+    auto itrfind = trie.find(upper);
+    std::cout << *itrfind << '\n';
 }
 
 void triefind(Trie<int> &trie){
