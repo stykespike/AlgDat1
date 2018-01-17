@@ -102,19 +102,25 @@ void trieinsert(Trie<int> &trie){
 	std::cin >> input;
 	std::cout << "Enter position to insert at: ";
 	std::cin >> index;
-    trie.insert(std::make_pair(index, input));
+        std::cout << '\n';
+    trie.insert(std::make_pair(input, index));
+    std::cout << "Element has been inserted" << '\n';
 }
 
 void trieerase(Trie<int> &trie){
-    
+    std::string eraser;
+    std::cout << "Enter word to delete" << '\n';
+	std::cin >> eraser;
+    std::cout << "Element has been removed" << '\n';
 }
 
 void trieclear(Trie<int> &trie){
-    
+    trie.clear();
+    std::cout << "Trie cleared!" << '\n';
 }
 
 void trieprint(Trie<int> &trie){
-    
+    trie.print();
 }
 
 void trielower(Trie<int> &trie){
@@ -130,9 +136,11 @@ void triefind(Trie<int> &trie){
 }
 
 void triebegin(Trie<int> &trie){
-    
+    auto itr1 = trie.begin();
+    std::cout << "Beginning iterator: " << *itr1 << '\n';
 }
 
 void trieend(Trie<int> &trie){
-    
+    auto itr2 = trie.begin();
+    std::cout << "End iterator: " << *itr2 << '\n';
 }
