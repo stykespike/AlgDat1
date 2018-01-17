@@ -6,18 +6,19 @@
  */
 
 #include<iostream>
+#include <string>
 #include "Trie.hpp"
 
-void trieempty();
-void trieinsert();
-void trieerase();
-void trieclear();
-void trieprint();
-void trielower();
-void trieupper();
-void triefind();
-void triebegin();
-void trieend();
+void trieempty(Trie<int> &trie);
+void trieinsert(Trie<int> &trie);
+void trieerase(Trie<int> &trie);
+void trieclear(Trie<int> &trie);
+void trieprint(Trie<int> &trie);
+void trielower(Trie<int> &trie);
+void trieupper(Trie<int> &trie);
+void triefind(Trie<int> &trie);
+void triebegin(Trie<int> &trie);
+void trieend(Trie<int> &trie);
 
 int main(int argc, char* argv[]){
     Trie<int> trie1;
@@ -88,4 +89,50 @@ int main(int argc, char* argv[]){
     //trie1.print();
     //std::cin >> g;
     return 0;
+}
+
+void trieempty(Trie<int> &trie){
+    std::cout << (trie.empty()? "Trie is empty" : "Trie is not empty") << '\n';
+}
+
+void trieinsert(Trie<int> &trie){
+    std::string input;
+    int index;
+    std::cout << "Enter input" << '\n';
+	std::cin >> input;
+	std::cout << "Enter position to insert at: ";
+	std::cin >> index;
+    trie.insert(std::make_pair(index, input));
+}
+
+void trieerase(Trie<int> &trie){
+    
+}
+
+void trieclear(Trie<int> &trie){
+    
+}
+
+void trieprint(Trie<int> &trie){
+    
+}
+
+void trielower(Trie<int> &trie){
+    
+}
+
+void trieupper(Trie<int> &trie){
+    
+}
+
+void triefind(Trie<int> &trie){
+    
+}
+
+void triebegin(Trie<int> &trie){
+    
+}
+
+void trieend(Trie<int> &trie){
+    
 }
