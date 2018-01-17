@@ -2,7 +2,7 @@
  * main.cpp
  *
  *  Created on: 07.12.2017
- *      Author: schmi
+ *      Author: Stefan Bommas, Felix Schmidt
  */
 
 #include<iostream>
@@ -42,6 +42,7 @@ int main(int argc, char* argv[]){
 			<< "*------------------------*"	<< '\n'
 			<< "Enter number here: ";
 	std::cin >> command;
+        std::cout << '\n';
         try{
 		if(command == 1){
 			trieempty(trie1);
@@ -110,7 +111,8 @@ void trieinsert(Trie<int> &trie){
 void trieerase(Trie<int> &trie){
     std::string eraser;
     std::cout << "Enter word to delete" << '\n';
-	std::cin >> eraser;
+    std::cin >> eraser;
+    trie.erase(eraser);
     std::cout << "Element has been removed" << '\n';
 }
 
@@ -132,7 +134,11 @@ void trieupper(Trie<int> &trie){
 }
 
 void triefind(Trie<int> &trie){
-    
+    std::string find;
+    std::cout << "Enter element to receive position" << '\n';
+    std::cin >> find;
+    auto itrfind = trie.find(find);
+    std::cout << *itrfind << '\n';
 }
 
 void triebegin(Trie<int> &trie){
