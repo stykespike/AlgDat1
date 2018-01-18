@@ -175,7 +175,7 @@ typename Trie<T,E>::Iterator Trie<T,E>::insert(const value_type& value){
 template<class T,class E>
 void Trie<T,E>::erase(const key_type& value) {
 	std::string deleteKey = value;
-	int index = 0;
+	unsigned int index = 0;
 	std::stack<std::weak_ptr<Inner>> rStack;
 	std::shared_ptr<Inner> dPtr = std::static_pointer_cast<Inner>(m_Root);
 	//checks if the key is not empty
@@ -202,10 +202,11 @@ void Trie<T,E>::erase(const key_type& value) {
 		rStack.push(wPtr);
 		++index;
 		dPtr = sPtr;
+
 	}
 
 	//case if the key does not exist in the trie
-	if (rStack.top().lock()->count('#') < 1) {
+	if (rStack.top().lock()->count('#') < 1 || index < deleteKey.length()) {
 
 		// exception word is not in trie
 		throw "The Key you are trying to delete does not exist in this trie";
